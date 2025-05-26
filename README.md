@@ -93,19 +93,6 @@ The model and dataset are too large for GitHub and are stored externally on Goog
 
 ### 🔗 [Google Drive Folder](https://drive.google.com/drive/folders/1IlDV2tzp0XSsGGAmDv3g1UmgCG19pFbl?usp=sharing)
 
-To automate downloading, install `gdown` and run:
-
-```python
-import gdown
-
-# Replace with actual file ID from your Google Drive
-gdown.download("https://drive.google.com/uc?id=1vXCBUMDEp3_-PfBGM_5rZLUOBT5wWsOD", output="model/ransomware_model.pkl", quiet=False)
-```
-
-Repeat for other files like `feature_names.pkl`, `scaler.pkl`, and `MalwareData.csv`.
-
----
-
 ## 🚀 Running the Project
 
 Make sure your database is set up and reachable. Then, run:
