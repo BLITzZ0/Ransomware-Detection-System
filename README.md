@@ -162,5 +162,5 @@ Pull requests are welcome. For major changes, open an issue first to discuss wha
 
 ## 📬 Contact
 
-Created by [BLITzZ0](https://github.com/BLITzZ0)  [Ankit-2039](https://github.com/Ankit-2039)
+Created by [BLITzZ0](https://github.com/BLITzZ0) and [Ankit-2039](https://github.com/Ankit-2039)
 For questions or feedback, open an issue on GitHub.
