@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ransomware Detection Dashboard</title>
+  <style>
+    :root {
+      --primary: #0077b6;
+      --secondary: #023e8a;
+      --danger: #e63946;
+      --success: #0077b6;
+      --warning: #f4a261;
+      --dark: #1e1e2f;
+      --light: #f1f1f1;
+      --muted: #6c757d;
+      --background: #edeeef;
+      --table-hover: rgba(0, 119, 182, 0.05);
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--background);
+      color: var(--dark);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #e5e7eb;
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+    }
+
+    h2 {
+      color: var(--secondary);
+      margin: 40px 0 15px;
+      display: flex;
+      align-items: center;
+      font-size: 22px;
+      gap: 8px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    th {
+      background-color: var(--primary);
+      color: white;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    tr:hover {
+      background-color: var(--table-hover);
+    }
+
+    .threat-card th {
+      background-color: var(--danger);
+    }
+
+    .monitor-card th {
+      background-color: var(--success);
+    }
+
+    code {
+      font-family: monospace;
+      background-color: #e0f4ff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--primary);
+    }
+
+    .search-bar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      flex-grow: 1;
+      max-width: 400px;
+      transition: all 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.2);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #c72535;
+    }
+
+    .ransomware-row {
+      background-color: rgba(230, 57, 70, 0.08) !important;
+      border-left: 4px solid var(--danger);
+    }
+
+    .timestamp {
+      white-space: nowrap;
+    }
+
+    .confidence-cell {
+      font-weight: 500;
+    }
+
+    .high-confidence {
+      color: var(--danger);
+    }
+
+    .medium-confidence {
+      color: var(--warning);
+    }
+
+    .low-confidence {
+      color: var(--success);
+    }
+
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .badge-danger {
+      background-color: rgba(230, 57, 70, 0.1);
+      color: var(--danger);
+    }
+
+    .badge-success {
+      background-color: rgba(42, 157, 143, 0.1);
+      color: var(--success);
+    }
+
+    .badge-warning {
+      background-color: rgba(244, 162, 97, 0.1);
+      color: var(--warning);
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .scrollable-table {
+      max-height: 400px;
+      overflow-y: auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>
+        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM12 11.99H19C18.47 16.11 15.72 19.78 12 20.93V12H5V6.3L12 3.19V11.99Z" fill="#0077b6"/></svg>
+        Ransomware Detection Dashboard
+      </h1>
+      <div class="button-group">
+        <button class="btn-danger" onclick="exportThreatLogs()">Export Threat Logs</button>
+        <button class="btn-primary" onclick="exportLogs()">Export All Logs</button>
+      </div>
+    </header>
+
+    <h2>
+      <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM11 7H13V9H11V7ZM11 11H13V17H11V11Z" fill="#e63946"/></svg>
+      Threat Logs
+    </h2>
+    <div class="card threat-card">
+      <div class="scrollable-table">
+        <table id="threat-logs">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>File Path</th>
+              <th>Action Taken</th>
+              <th>Processes Killed</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <h2>
+      <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z" fill="#2a9d8f"/><path d="M7 12H9V17H7V12ZM11 7H13V17H11V7ZM15 10H17V17H15V10Z" fill="#2a9d8f"/></svg>
+      Monitor Logs
+    </h2>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search file path..." onkeyup="filterLogs()">
+    </div>
+    <div class="card monitor-card">
+      <div class="scrollable-table">
+        <table id="monitor-logs">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>File Path</th>
+              <th>Event Type</th>
+              <th>Prediction</th>
+              <th>Confidence</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let isSearching = false;
+
+    async function fetchLogs() {
+      const res = await fetch("/api/logs");
+      const data = await res.json();
+
+      const threatTable = document.querySelector("#threat-logs tbody");
+      const monitorTable = document.querySelector("#monitor-logs tbody");
+
+      threatTable.innerHTML = "";
+      monitorTable.innerHTML = "";
+
+      data.threat_logs.forEach(log => {
+        threatTable.innerHTML += `
+          <tr>
+            <td class="timestamp">${log.timestamp}</td>
+            <td><code>${log.file_path}</code></td>
+            <td><span class="status-badge badge-danger">${log.action_taken}</span></td>
+            <td>${log.processes_killed.length ? log.processes_killed.map(p => `PID ${p[0]} - ${p[1]}`).join("<br>") : "<em>None</em>"}</td>
+          </tr>`;
+      });
+
+      data.monitor_logs.forEach(log => {
+        const row = document.createElement("tr");
+        if (log.prediction === "ransomware") row.classList.add("ransomware-row");
+
+        const confidenceClass = log.confidence > 0.8 ? "high-confidence"
+                              : log.confidence > 0.5 ? "medium-confidence"
+                              : "low-confidence";
+
+        row.innerHTML = `
+          <td class="timestamp">${log.timestamp}</td>
+          <td><code>${log.file_path}</code></td>
+          <td>${log.event_type}</td>
+          <td><span class="status-badge ${log.prediction === 'ransomware' ? 'badge-danger' : 'badge-success'}">${log.prediction}</span></td>
+          <td class="confidence-cell ${confidenceClass}">${log.confidence !== undefined ? (log.confidence * 100).toFixed(2) + '%' : "N/A"}</td>
+        `;
+        monitorTable.appendChild(row);
+      });
+    }
+
+    function filterLogs() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      isSearching = query.length > 0;
+
+      document.querySelectorAll("#monitor-logs tbody tr").forEach(row => {
+        const filePath = row.children[1].innerText.toLowerCase();
+        row.style.display = filePath.includes(query) ? "" : "none";
+      });
+    }
+
+    function exportLogs() {
+      fetch("/api/logs").then(res => res.json()).then(data => {
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "all_logs.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    function exportThreatLogs() {
+      fetch("/api/logs").then(res => res.json()).then(data => {
+        const blob = new Blob([JSON.stringify(data.threat_logs, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "threat_logs.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    setInterval(() => {
+      if (!isSearching) fetchLogs();
+    }, 5000);
+
+    window.onload = fetchLogs;
+  </script>
+</body>
+</html>

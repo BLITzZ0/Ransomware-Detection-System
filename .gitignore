@@ -1,0 +1,49 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+
+# Virtual environments
+venv/
+env/
+ENV/
+*.venv
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs and database dumps
+*.log
+*.sqlite3
+*.db
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Archives and large files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# # Model files or checkpoints
+# *.h5
+# *.pth
+# *.pkl
+# *.joblib
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Supabase build (if any frontend is built into project)
+dist/
+build/
+node_modules/
+
+# Pytest cache
+.pytest_cache/
